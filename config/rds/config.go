@@ -44,6 +44,24 @@ func Configure(p *config.Provider) { //nolint:gocyclo
 		r.UseAsync = true
 		r.Sensitive.AdditionalConnectionDetailsFn = func(attr map[string]any) (map[string][]byte, error) {
 			conn := map[string][]byte{}
+
+			if n, ok := attr["normalize_connection_secret"].(bool); ok && n {
+				if a, ok := attr["endpoint"].(string); ok {
+					conn["endpoint"] = []byte(a)
+				}
+				if a, ok := attr["master_username"].(string); ok {
+					conn["username"] = []byte(a)
+				}
+				if a, ok := attr["port"]; ok {
+					conn["port"] = []byte(fmt.Sprintf("%v", a))
+				}
+				if a, ok := attr["master_password"]; ok {
+					conn["password"] = []byte(fmt.Sprintf("%v", a))
+				}
+
+				return conn, nil
+			}
+
 			if a, ok := attr["endpoint"].(string); ok {
 				conn["endpoint"] = []byte(a)
 			}
@@ -69,13 +87,20 @@ func Configure(p *config.Provider) { //nolint:gocyclo
 			"MasterUserSecretInitParameters":     "ClusterMasterUserSecretInitParameters",
 			"MasterUserSecretObservation":        "ClusterMasterUserSecretObservation",
 		}
-		desc, _ := comments.New("If true, the password will be auto-generated and"+
+		normalize_secret_desc, _ := comments.New("If true, the connection secret will be TODO.",
+			comments.WithTFTag("-"))
+		r.TerraformResource.Schema["normalize_connection_secret"] = &schema.Schema{
+			Type:        schema.TypeBool,
+			Optional:    true,
+			Description: normalize_secret_desc.String(),
+		}
+		gen_pass_desc, _ := comments.New("If true, the password will be auto-generated and"+
 			" stored in the Secret referenced by the masterPasswordSecretRef field.",
 			comments.WithTFTag("-"))
 		r.TerraformResource.Schema["auto_generate_password"] = &schema.Schema{
 			Type:        schema.TypeBool,
 			Optional:    true,
-			Description: desc.String(),
+			Description: gen_pass_desc.String(),
 		}
 		r.InitializerFns = append(r.InitializerFns,
 			common.PasswordGenerator(
