@@ -6,9 +6,9 @@ package rds
 
 import (
 	"fmt"
-
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/terraform"
+	"github.com/upbound/provider-aws/apis/rds/v1beta1"
 
 	"github.com/crossplane/upjet/pkg/config"
 	"github.com/crossplane/upjet/pkg/types/comments"
@@ -42,24 +42,27 @@ func Configure(p *config.Provider) { //nolint:gocyclo
 			Extractor:     common.PathARNExtractor,
 		}
 		r.UseAsync = true
-		r.Sensitive.AdditionalConnectionDetailsFn = func(attr map[string]any) (map[string][]byte, error) {
+		r.Sensitive.AdditionalConnectionDetailsWithResourceFn = func(attr map[string]any, res any) (map[string][]byte, error) {
 			conn := map[string][]byte{}
-
-			if n, ok := attr["normalize_connection_secret"].(bool); ok && n {
-				if a, ok := attr["endpoint"].(string); ok {
-					conn["endpoint"] = []byte(a)
+			if cluster, ok := res.(*v1beta1.Cluster); ok {
+				if n := cluster.Spec.ForProvider.NormalizeConnectionSecret; n != nil && *n {
+					if a, ok := attr["endpoint"].(string); ok {
+						conn["endpoint"] = []byte(a)
+					}
+					if a, ok := attr["reader_endpoint"].(string); ok {
+						conn["readerEndpoint"] = []byte(a)
+					}
+					if a, ok := attr["master_username"].(string); ok {
+						conn["username"] = []byte(a)
+					}
+					if a, ok := attr["port"]; ok {
+						conn["port"] = []byte(fmt.Sprintf("%v", a))
+					}
+					if a, ok := attr["master_password"]; ok {
+						conn["password"] = []byte(fmt.Sprintf("%v", a))
+					}
+					return conn, nil
 				}
-				if a, ok := attr["master_username"].(string); ok {
-					conn["username"] = []byte(a)
-				}
-				if a, ok := attr["port"]; ok {
-					conn["port"] = []byte(fmt.Sprintf("%v", a))
-				}
-				if a, ok := attr["master_password"]; ok {
-					conn["password"] = []byte(fmt.Sprintf("%v", a))
-				}
-
-				return conn, nil
 			}
 
 			if a, ok := attr["endpoint"].(string); ok {
