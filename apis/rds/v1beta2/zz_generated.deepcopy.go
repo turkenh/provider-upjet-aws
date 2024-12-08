@@ -1234,6 +1234,11 @@ func (in *ClusterParameters) DeepCopyInto(out *ClusterParameters) {
 		*out = new(string)
 		**out = **in
 	}
+	if in.NormalizeConnectionSecret != nil {
+		in, out := &in.NormalizeConnectionSecret, &out.NormalizeConnectionSecret
+		*out = new(bool)
+		**out = **in
+	}
 	if in.PerformanceInsightsEnabled != nil {
 		in, out := &in.PerformanceInsightsEnabled, &out.PerformanceInsightsEnabled
 		*out = new(bool)

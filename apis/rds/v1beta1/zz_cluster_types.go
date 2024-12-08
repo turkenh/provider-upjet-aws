@@ -690,6 +690,11 @@ type ClusterParameters struct {
 	// +kubebuilder:validation:Optional
 	NetworkType *string `json:"networkType,omitempty" tf:"network_type,omitempty"`
 
+	// If true, the connection secret will be TODO.
+	// +upjet:crd:field:TFTag=-
+	// +kubebuilder:validation:Optional
+	NormalizeConnectionSecret *bool `json:"normalizeConnectionSecret,omitempty" tf:"-"`
+
 	// Valid only for Non-Aurora Multi-AZ DB Clusters. Enables Performance Insights for the RDS Cluster
 	// +kubebuilder:validation:Optional
 	PerformanceInsightsEnabled *bool `json:"performanceInsightsEnabled,omitempty" tf:"performance_insights_enabled,omitempty"`

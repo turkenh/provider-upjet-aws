@@ -668,6 +668,9 @@ spec:
                     description: 'Network type of the cluster. Valid values: IPV4,
                       DUAL.'
                     type: string
+                  normalizeConnectionSecret:
+                    description: If true, the connection secret will be TODO.
+                    type: boolean
                   performanceInsightsEnabled:
                     description: Valid only for Non-Aurora Multi-AZ DB Clusters. Enables
                       Performance Insights for the RDS Cluster
@@ -3500,6 +3503,9 @@ spec:
                     description: 'Network type of the cluster. Valid values: IPV4,
                       DUAL.'
                     type: string
+                  normalizeConnectionSecret:
+                    description: If true, the connection secret will be TODO.
+                    type: boolean
                   performanceInsightsEnabled:
                     description: Valid only for Non-Aurora Multi-AZ DB Clusters. Enables
                       Performance Insights for the RDS Cluster

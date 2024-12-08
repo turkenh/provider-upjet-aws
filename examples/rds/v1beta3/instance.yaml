@@ -10,7 +10,7 @@ metadata:
     uptest.upbound.io/timeout: "3600"
   labels:
     testing.upbound.io/example-name: example-dbinstance
-  name: example-dbinstance-${Rand.RFC1123Subdomain}
+  name: example-dbinstance-hasan
 spec:
   forProvider:
     allocatedStorage: 20
@@ -49,7 +49,7 @@ metadata:
     meta.upbound.io/example-id: rds/v1beta3/instance
   labels:
     testing.upbound.io/example-name: sample-key
-  name: sample-key-${Rand.RFC1123Subdomain}
+  name: sample-key-hasan
 spec:
   forProvider:
     deletionWindowInDays: 7

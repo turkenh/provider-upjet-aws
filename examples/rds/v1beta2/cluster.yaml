@@ -10,6 +10,7 @@ metadata:
   name: example
 spec:
   forProvider:
+    normalizeConnectionSecret: true
     autoGeneratePassword: true
     dbClusterParameterGroupNameSelector:
       matchLabels:
